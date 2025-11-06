@@ -6,6 +6,7 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { TextColorFeature } from 'payloadcms-lexical-ext'
 
 import { linkGroup } from '@/fields/linkGroup'
 
@@ -77,6 +78,17 @@ export const hero: Field = {
           return [
             ...rootFeatures,
             HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+            TextColorFeature({
+              predefinedColors: [
+                { label: 'Brand', value: '#C0367B' },
+                { label: 'White', value: '#FFFFFF' },
+                { label: 'Black', value: '#000000' },
+                { label: 'Gray', value: '#6B7280' },
+                { label: 'Primary', value: '#3B82F6' },
+                { label: 'Secondary', value: '#8B5CF6' },
+                { label: 'Accent', value: '#F59E0B' },
+              ],
+            }),
             FixedToolbarFeature(),
             InlineToolbarFeature(),
           ]
