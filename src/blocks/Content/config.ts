@@ -16,19 +16,27 @@ const columnFields: Field[] = [
     defaultValue: 'oneThird',
     options: [
       {
-        label: 'One Third',
+        label: 'One Quarter (25%)',
+        value: 'oneQuarter',
+      },
+      {
+        label: 'One Third (33%)',
         value: 'oneThird',
       },
       {
-        label: 'Half',
+        label: 'Half (50%)',
         value: 'half',
       },
       {
-        label: 'Two Thirds',
+        label: 'Two Thirds (66%)',
         value: 'twoThirds',
       },
       {
-        label: 'Full',
+        label: 'Three Quarters (75%)',
+        value: 'threeQuarters',
+      },
+      {
+        label: 'Full Width (100%)',
         value: 'full',
       },
     ],
@@ -63,6 +71,8 @@ const columnFields: Field[] = [
   }),
 ]
 
+import { getAllBlockFields } from '@/fields/blockFields'
+
 export const Content: Block = {
   slug: 'content',
   interfaceName: 'ContentBlock',
@@ -75,5 +85,6 @@ export const Content: Block = {
       },
       fields: columnFields,
     },
+    ...getAllBlockFields(),
   ],
 }

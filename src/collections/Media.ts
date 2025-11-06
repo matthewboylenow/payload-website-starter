@@ -37,6 +37,42 @@ export const Media: CollectionConfig = {
         },
       }),
     },
+    {
+      name: 'optimization',
+      type: 'group',
+      label: 'Image Optimization',
+      fields: [
+        {
+          name: 'priority',
+          type: 'checkbox',
+          label: 'Priority Loading',
+          defaultValue: false,
+          admin: {
+            description: 'Enable for above-the-fold images (hero images, etc.)',
+          },
+        },
+        {
+          name: 'quality',
+          type: 'number',
+          label: 'Quality',
+          defaultValue: 80,
+          min: 1,
+          max: 100,
+          admin: {
+            description: 'Image quality (1-100). Lower = smaller file size.',
+          },
+        },
+        {
+          name: 'lazyLoad',
+          type: 'checkbox',
+          label: 'Lazy Load',
+          defaultValue: true,
+          admin: {
+            description: 'Delay loading until image is near viewport',
+          },
+        },
+      ],
+    },
   ],
   upload: {
     // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload
