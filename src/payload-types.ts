@@ -72,6 +72,7 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    blocks: Block;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -88,6 +89,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    blocks: BlocksSelect<false> | BlocksSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -103,10 +105,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    settings: Setting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    settings: SettingsSelect<false> | SettingsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -150,6 +154,7 @@ export interface Page {
   title: string;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
+    height?: ('small' | 'medium' | 'large' | 'full' | 'auto') | null;
     richText?: {
       root: {
         type: string;
@@ -191,7 +196,20 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | VideoBlock
+    | TestimonialsBlock
+    | TabsAccordionBlock
+    | StatsBlock
+    | TimelineBlock
+    | BannerBlock
+    | CodeBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -282,6 +300,20 @@ export interface Media {
     };
     [k: string]: unknown;
   } | null;
+  optimization?: {
+    /**
+     * Enable for above-the-fold images (hero images, etc.)
+     */
+    priority?: boolean | null;
+    /**
+     * Image quality (1-100). Lower = smaller file size.
+     */
+    quality?: number | null;
+    /**
+     * Delay loading until image is near viewport
+     */
+    lazyLoad?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -445,6 +477,108 @@ export interface CallToActionBlock {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'cta';
@@ -456,7 +590,7 @@ export interface CallToActionBlock {
 export interface ContentBlock {
   columns?:
     | {
-        size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+        size?: ('oneQuarter' | 'oneThird' | 'half' | 'twoThirds' | 'threeQuarters' | 'full') | null;
         richText?: {
           root: {
             type: string;
@@ -495,6 +629,108 @@ export interface ContentBlock {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
@@ -505,6 +741,108 @@ export interface ContentBlock {
  */
 export interface MediaBlock {
   media: number | Media;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
@@ -539,6 +877,108 @@ export interface ArchiveBlock {
         value: number | Post;
       }[]
     | null;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'archive';
@@ -565,6 +1005,108 @@ export interface FormBlock {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'formBlock';
@@ -740,6 +1282,1008 @@ export interface Form {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock".
+ */
+export interface VideoBlock {
+  videoType: 'embed' | 'upload';
+  /**
+   * YouTube or Vimeo URL (e.g., https://www.youtube.com/watch?v=...)
+   */
+  embedURL?: string | null;
+  videoFile?: (number | null) | Media;
+  caption?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  aspectRatio?: ('16/9' | '4/3' | '1/1' | '21/9') | null;
+  autoplay?: boolean | null;
+  loop?: boolean | null;
+  /**
+   * Required for autoplay to work in most browsers
+   */
+  muted?: boolean | null;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'video';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock".
+ */
+export interface TestimonialsBlock {
+  heading?: string | null;
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  testimonials?:
+    | {
+        quote: string;
+        author: string;
+        role?: string | null;
+        company?: string | null;
+        avatar?: (number | null) | Media;
+        /**
+         * Optional star rating
+         */
+        rating?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  layout?: ('grid' | 'carousel' | 'featured') | null;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TabsAccordionBlock".
+ */
+export interface TabsAccordionBlock {
+  heading?: string | null;
+  displayMode: 'tabs' | 'accordion' | 'responsive';
+  items?:
+    | {
+        label: string;
+        content: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Which item should be open by default? (0 = first item, 1 = second, etc.)
+   */
+  defaultOpen?: number | null;
+  allowMultiple?: boolean | null;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tabsAccordion';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock".
+ */
+export interface StatsBlock {
+  heading?: string | null;
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  stats?:
+    | {
+        /**
+         * The number or value (e.g., "100", "99%", "$5M")
+         */
+        value: string;
+        /**
+         * What this statistic represents
+         */
+        label: string;
+        /**
+         * Optional additional context
+         */
+        description?: string | null;
+        icon?: ('none' | 'users' | 'star' | 'chart' | 'trophy' | 'lightning' | 'globe' | 'heart' | 'rocket') | null;
+        /**
+         * Animate counting up to the value
+         */
+        animate?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  layout?: ('grid-2' | 'grid-3' | 'grid-4' | 'horizontal') | null;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'stats';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock".
+ */
+export interface TimelineBlock {
+  heading?: string | null;
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  items?:
+    | {
+        /**
+         * e.g., "2024", "Q1 2024", "January 2024"
+         */
+        date: string;
+        title: string;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        image?: (number | null) | Media;
+        icon?: ('none' | 'check' | 'star' | 'flag' | 'lightbulb' | 'rocket' | 'calendar') | null;
+        id?: string | null;
+      }[]
+    | null;
+  layout?: ('vertical' | 'vertical-center' | 'horizontal') | null;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'timeline';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock".
+ */
+export interface BannerBlock {
+  style: 'info' | 'warning' | 'error' | 'success';
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock".
+ */
+export interface CodeBlock {
+  language?: ('typescript' | 'javascript' | 'css') | null;
+  code: string;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'code';
+}
+/**
+ * Create reusable blocks that can be referenced across multiple pages
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blocks".
+ */
+export interface Block {
+  id: number;
+  /**
+   * A descriptive name to identify this block
+   */
+  name: string;
+  /**
+   * Optional description of what this block is used for
+   */
+  description?: string | null;
+  block: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | VideoBlock
+    | TestimonialsBlock
+    | TabsAccordionBlock
+    | StatsBlock
+    | TimelineBlock
+    | BannerBlock
+    | CodeBlock
+  )[];
+  /**
+   * Categorize this block for easier filtering
+   */
+  category?: ('cta' | 'content' | 'media' | 'interactive' | 'social-proof' | 'forms' | 'other') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -937,6 +2481,10 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'blocks';
+        value: number | Block;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1008,6 +2556,7 @@ export interface PagesSelect<T extends boolean = true> {
     | T
     | {
         type?: T;
+        height?: T;
         richText?: T;
         links?:
           | T
@@ -1034,6 +2583,13 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        video?: T | VideoBlockSelect<T>;
+        testimonials?: T | TestimonialsBlockSelect<T>;
+        tabsAccordion?: T | TabsAccordionBlockSelect<T>;
+        stats?: T | StatsBlockSelect<T>;
+        timeline?: T | TimelineBlockSelect<T>;
+        banner?: T | BannerBlockSelect<T>;
+        code?: T | CodeBlockSelect<T>;
       };
   meta?:
     | T
@@ -1070,6 +2626,31 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
   id?: T;
   blockName?: T;
 }
@@ -1096,6 +2677,31 @@ export interface ContentBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
   id?: T;
   blockName?: T;
 }
@@ -1105,6 +2711,31 @@ export interface ContentBlockSelect<T extends boolean = true> {
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
   id?: T;
   blockName?: T;
 }
@@ -1119,6 +2750,31 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   categories?: T;
   limit?: T;
   selectedDocs?: T;
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
   id?: T;
   blockName?: T;
 }
@@ -1130,6 +2786,325 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock_select".
+ */
+export interface VideoBlockSelect<T extends boolean = true> {
+  videoType?: T;
+  embedURL?: T;
+  videoFile?: T;
+  caption?: T;
+  aspectRatio?: T;
+  autoplay?: T;
+  loop?: T;
+  muted?: T;
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock_select".
+ */
+export interface TestimonialsBlockSelect<T extends boolean = true> {
+  heading?: T;
+  introContent?: T;
+  testimonials?:
+    | T
+    | {
+        quote?: T;
+        author?: T;
+        role?: T;
+        company?: T;
+        avatar?: T;
+        rating?: T;
+        id?: T;
+      };
+  layout?: T;
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TabsAccordionBlock_select".
+ */
+export interface TabsAccordionBlockSelect<T extends boolean = true> {
+  heading?: T;
+  displayMode?: T;
+  items?:
+    | T
+    | {
+        label?: T;
+        content?: T;
+        id?: T;
+      };
+  defaultOpen?: T;
+  allowMultiple?: T;
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock_select".
+ */
+export interface StatsBlockSelect<T extends boolean = true> {
+  heading?: T;
+  introContent?: T;
+  stats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        description?: T;
+        icon?: T;
+        animate?: T;
+        id?: T;
+      };
+  layout?: T;
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock_select".
+ */
+export interface TimelineBlockSelect<T extends boolean = true> {
+  heading?: T;
+  introContent?: T;
+  items?:
+    | T
+    | {
+        date?: T;
+        title?: T;
+        description?: T;
+        image?: T;
+        icon?: T;
+        id?: T;
+      };
+  layout?: T;
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock_select".
+ */
+export interface BannerBlockSelect<T extends boolean = true> {
+  style?: T;
+  content?: T;
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock_select".
+ */
+export interface CodeBlockSelect<T extends boolean = true> {
+  language?: T;
+  code?: T;
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
   id?: T;
   blockName?: T;
 }
@@ -1171,6 +3146,13 @@ export interface PostsSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
+  optimization?:
+    | T
+    | {
+        priority?: T;
+        quality?: T;
+        lazyLoad?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1299,6 +3281,33 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blocks_select".
+ */
+export interface BlocksSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  block?:
+    | T
+    | {
+        cta?: T | CallToActionBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        archive?: T | ArchiveBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        video?: T | VideoBlockSelect<T>;
+        testimonials?: T | TestimonialsBlockSelect<T>;
+        tabsAccordion?: T | TabsAccordionBlockSelect<T>;
+        stats?: T | StatsBlockSelect<T>;
+        timeline?: T | TimelineBlockSelect<T>;
+        banner?: T | BannerBlockSelect<T>;
+        code?: T | CodeBlockSelect<T>;
+      };
+  category?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1615,6 +3624,111 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings".
+ */
+export interface Setting {
+  id: number;
+  /**
+   * Default font for body text across the site
+   */
+  defaultFont?:
+    | (
+        | 'geist-sans'
+        | 'geist-mono'
+        | 'inter'
+        | 'roboto'
+        | 'open-sans'
+        | 'lato'
+        | 'montserrat'
+        | 'playfair-display'
+        | 'merriweather'
+        | 'poppins'
+        | 'raleway'
+        | 'source-sans-pro'
+      )
+    | null;
+  /**
+   * Default font for headings across the site
+   */
+  headingFont?:
+    | (
+        | 'geist-sans'
+        | 'geist-mono'
+        | 'inter'
+        | 'roboto'
+        | 'open-sans'
+        | 'lato'
+        | 'montserrat'
+        | 'playfair-display'
+        | 'merriweather'
+        | 'poppins'
+        | 'raleway'
+        | 'source-sans-pro'
+      )
+    | null;
+  /**
+   * Default color for body text
+   */
+  defaultTextColor?:
+    | (
+        | 'foreground'
+        | 'muted-foreground'
+        | 'accent-foreground'
+        | 'brand-foreground'
+        | 'primary-foreground'
+        | 'secondary-foreground'
+        | 'white'
+        | 'black'
+      )
+    | null;
+  /**
+   * Default color for headings
+   */
+  defaultHeadingColor?:
+    | ('foreground' | 'brand' | 'primary' | 'secondary' | 'accent' | 'muted-foreground' | 'white' | 'black')
+    | null;
+  /**
+   * Add custom Google Fonts to use throughout the site
+   */
+  customGoogleFonts?:
+    | {
+        /**
+         * e.g., "Roboto Slab", "Dancing Script"
+         */
+        name: string;
+        /**
+         * URL-friendly name (e.g., "roboto-slab", "dancing-script")
+         */
+        slug: string;
+        /**
+         * Comma-separated weights (e.g., "300,400,700")
+         */
+        weights?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Define custom colors for use in blocks
+   */
+  customColors?:
+    | {
+        name: string;
+        /**
+         * CSS-friendly name (e.g., "custom-blue")
+         */
+        slug: string;
+        /**
+         * Hex code (e.g., "#FF5733") or HSL (e.g., "210 40% 50%")
+         */
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -1661,6 +3775,35 @@ export interface FooterSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings_select".
+ */
+export interface SettingsSelect<T extends boolean = true> {
+  defaultFont?: T;
+  headingFont?: T;
+  defaultTextColor?: T;
+  defaultHeadingColor?: T;
+  customGoogleFonts?:
+    | T
+    | {
+        name?: T;
+        slug?: T;
+        weights?: T;
+        id?: T;
+      };
+  customColors?:
+    | T
+    | {
+        name?: T;
+        slug?: T;
+        value?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TaskSchedulePublish".
  */
 export interface TaskSchedulePublish {
@@ -1680,42 +3823,6 @@ export interface TaskSchedulePublish {
     user?: (number | null) | User;
   };
   output?: unknown;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BannerBlock".
- */
-export interface BannerBlock {
-  style: 'info' | 'warning' | 'error' | 'success';
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'banner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CodeBlock".
- */
-export interface CodeBlock {
-  language?: ('typescript' | 'javascript' | 'css') | null;
-  code: string;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'code';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

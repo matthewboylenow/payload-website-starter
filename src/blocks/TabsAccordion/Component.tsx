@@ -13,7 +13,9 @@ export const TabsAccordionBlock: React.FC<TabsAccordionBlockProps> = ({
   allowMultiple,
 }) => {
   const [activeTab, setActiveTab] = useState(defaultOpen)
-  const [openAccordions, setOpenAccordions] = useState<number[]>([defaultOpen])
+  const [openAccordions, setOpenAccordions] = useState<number[]>(
+    defaultOpen !== null ? [defaultOpen] : []
+  )
 
   if (!items || items.length === 0) return null
 
@@ -49,7 +51,7 @@ export const TabsAccordionBlock: React.FC<TabsAccordionBlockProps> = ({
       </div>
 
       <div className="py-8">
-        {items[activeTab]?.content && (
+        {activeTab !== null && items[activeTab]?.content && (
           <RichText data={items[activeTab].content} enableGutter={false} />
         )}
       </div>

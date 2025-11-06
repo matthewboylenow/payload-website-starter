@@ -25,7 +25,7 @@ const TestimonialCard: React.FC<{ testimonial: any }> = ({ testimonial }) => (
     {testimonial.rating && <StarRating rating={testimonial.rating} />}
 
     <blockquote className="text-lg italic text-foreground">
-      "{testimonial.quote}"
+      &ldquo;{testimonial.quote}&rdquo;
     </blockquote>
 
     <div className="mt-auto flex items-center gap-4">

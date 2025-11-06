@@ -13,7 +13,7 @@ import { TabsAccordionBlock } from '@/blocks/TabsAccordion/Component'
 import { StatsBlock } from '@/blocks/Stats/Component'
 import { TimelineBlock } from '@/blocks/Timeline/Component'
 import { BannerBlock } from '@/blocks/Banner/Component'
-import { CodeBlock } from '@/blocks/Code/Component.client'
+import { Code as CodeBlock } from '@/blocks/Code/Component.client'
 import { BlockWrapper } from '@/components/BlockWrapper'
 
 const blockComponents = {

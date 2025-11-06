@@ -41,7 +41,7 @@ export const VideoBlock: React.FC<VideoBlockProps> = ({
     '21/9': 'aspect-[21/9]',
   }
 
-  const aspectClass = aspectRatioClasses[aspectRatio] || 'aspect-video'
+  const aspectClass = aspectRatioClasses[aspectRatio || '16/9'] || 'aspect-video'
 
   return (
     <div className="container">
@@ -60,9 +60,9 @@ export const VideoBlock: React.FC<VideoBlockProps> = ({
           <video
             className="absolute inset-0 h-full w-full object-cover"
             controls
-            autoPlay={autoplay}
-            loop={loop}
-            muted={muted}
+            autoPlay={autoplay || undefined}
+            loop={loop || undefined}
+            muted={muted || undefined}
           >
             <source src={videoFile.url!} type={videoFile.mimeType || 'video/mp4'} />
             Your browser does not support the video tag.
