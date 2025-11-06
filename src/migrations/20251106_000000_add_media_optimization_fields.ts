@@ -1,0 +1,17 @@
+import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-vercel-postgres'
+
+export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
+  await db.execute(sql`
+    ALTER TABLE "media" ADD COLUMN "optimization_priority" boolean DEFAULT false;
+    ALTER TABLE "media" ADD COLUMN "optimization_quality" numeric DEFAULT 80;
+    ALTER TABLE "media" ADD COLUMN "optimization_lazy_load" boolean DEFAULT true;
+  `)
+}
+
+export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
+  await db.execute(sql`
+    ALTER TABLE "media" DROP COLUMN IF EXISTS "optimization_priority";
+    ALTER TABLE "media" DROP COLUMN IF EXISTS "optimization_quality";
+    ALTER TABLE "media" DROP COLUMN IF EXISTS "optimization_lazy_load";
+  `)
+}
