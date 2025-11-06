@@ -4,13 +4,13 @@ import {
   SerializedBlockNode,
   SerializedLinkNode,
   type DefaultTypedEditorState,
+  SerializedTextNode,
 } from '@payloadcms/richtext-lexical'
 import {
   JSXConvertersFunction,
   LinkJSXConverter,
   RichText as ConvertRichText,
 } from '@payloadcms/richtext-lexical/react'
-import { JSXConverters as LexicalExtConverters } from 'payloadcms-lexical-ext'
 
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
 
@@ -38,7 +38,6 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
-  ...LexicalExtConverters,
   ...LinkJSXConverter({ internalDocToHref }),
   blocks: {
     banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
@@ -54,6 +53,30 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     ),
     code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
+  },
+  text: ({ node }: { node: SerializedTextNode }) => {
+    // Handle text color and background color from payloadcms-lexical-ext
+    const style: React.CSSProperties = {}
+    if (node.style) {
+      const colorMatch = node.style.match(/color:\s*([^;]+)/)
+      const bgColorMatch = node.style.match(/background-color:\s*([^;]+)/)
+      if (colorMatch) style.color = colorMatch[1].trim()
+      if (bgColorMatch) style.backgroundColor = bgColorMatch[1].trim()
+    }
+
+    let text = (
+      <span style={Object.keys(style).length > 0 ? style : undefined}>{node.text}</span>
+    )
+
+    // Apply text formatting
+    if (node.format & 1) text = <strong>{text}</strong>
+    if (node.format & 2) text = <em>{text}</em>
+    if (node.format & 8) text = <code>{text}</code>
+    if (node.format & 4) text = <s>{text}</s>
+    if (node.format & 16) text = <sub>{text}</sub>
+    if (node.format & 32) text = <sup>{text}</sup>
+
+    return text
   },
 })
 
