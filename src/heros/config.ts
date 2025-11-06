@@ -79,14 +79,14 @@ export const hero: Field = {
             ...rootFeatures,
             HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
             TextColorFeature({
-              predefinedColors: [
-                { label: 'Brand', value: '#C0367B' },
-                { label: 'White', value: '#FFFFFF' },
-                { label: 'Black', value: '#000000' },
-                { label: 'Gray', value: '#6B7280' },
-                { label: 'Primary', value: '#3B82F6' },
-                { label: 'Secondary', value: '#8B5CF6' },
-                { label: 'Accent', value: '#F59E0B' },
+              colors: [
+                { type: 'button', label: 'Brand', color: '#C0367B' },
+                { type: 'button', label: 'White', color: '#FFFFFF' },
+                { type: 'button', label: 'Black', color: '#000000' },
+                { type: 'button', label: 'Gray', color: '#6B7280' },
+                { type: 'button', label: 'Primary', color: '#3B82F6' },
+                { type: 'button', label: 'Secondary', color: '#8B5CF6' },
+                { type: 'button', label: 'Accent', color: '#F59E0B' },
               ],
             }),
             FixedToolbarFeature(),
