@@ -1,5 +1,6 @@
 import * as migration_20251009_155501_initial from './20251009_155501_initial'
 import * as migration_20251106_000000_add_media_optimization_fields from './20251106_000000_add_media_optimization_fields'
+import * as migration_20251106_000001_add_missing_blocks_and_fields from './20251106_000001_add_missing_blocks_and_fields'
 
 export const migrations = [
   {
@@ -11,5 +12,10 @@ export const migrations = [
     up: migration_20251106_000000_add_media_optimization_fields.up,
     down: migration_20251106_000000_add_media_optimization_fields.down,
     name: '20251106_000000_add_media_optimization_fields',
+  },
+  {
+    up: migration_20251106_000001_add_missing_blocks_and_fields.up,
+    down: migration_20251106_000001_add_missing_blocks_and_fields.down,
+    name: '20251106_000001_add_missing_blocks_and_fields',
   },
 ]
