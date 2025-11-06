@@ -14,10 +14,20 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
 import './globals.css'
+import 'payloadcms-lexical-ext/client/client.css'
 import { getServerSideURL } from '@/utilities/getURL'
+import { FontLoader } from '@/components/FontLoader'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
+
+  // Fetch settings for Google Fonts
+  const payload = await getPayload({ config })
+  const settings = await payload.findGlobal({
+    slug: 'settings',
+  })
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -25,6 +35,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <FontLoader
+          defaultFont={settings?.defaultFont || undefined}
+          headingFont={settings?.headingFont || undefined}
+          customFonts={settings?.customGoogleFonts?.map((font) => ({
+            name: font.name,
+            slug: font.slug,
+            weights: font.weights || undefined,
+          })) || undefined}
+        />
       </head>
       <body>
         <Providers>
