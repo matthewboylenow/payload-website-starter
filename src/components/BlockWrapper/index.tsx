@@ -10,6 +10,7 @@ interface BlockWrapperProps {
     paddingTop?: string
     paddingBottom?: string
   }
+  textAlignment?: string
   visibility?: {
     hidden?: boolean
     publishDate?: string
@@ -51,6 +52,13 @@ const paddingBottomClasses: Record<string, string> = {
   medium: 'pb-16',
   large: 'pb-24',
   xlarge: 'pb-32',
+}
+
+const textAlignmentClasses: Record<string, string> = {
+  left: 'text-left',
+  center: 'text-center',
+  right: 'text-right',
+  justify: 'text-justify',
 }
 
 const animationClasses: Record<string, string> = {
@@ -110,6 +118,7 @@ export const BlockWrapper: React.FC<BlockWrapperProps> = ({
   blockAnchor,
   backgroundColor = 'none',
   spacing,
+  textAlignment = 'left',
   visibility,
   animation = 'none',
   typography,
@@ -176,6 +185,7 @@ export const BlockWrapper: React.FC<BlockWrapperProps> = ({
   const bgClass = backgroundColorClasses[backgroundColor] || ''
   const ptClass = paddingClasses[spacing?.paddingTop || 'medium'] || 'pt-16'
   const pbClass = paddingBottomClasses[spacing?.paddingBottom || 'medium'] || 'pb-16'
+  const alignClass = textAlignmentClasses[textAlignment] || 'text-left'
   const animClass = animation !== 'none' && isVisible ? animationClasses[animation] : 'opacity-0'
 
   const fontClass = typography?.fontFamily && typography.fontFamily !== 'default'
@@ -196,6 +206,7 @@ export const BlockWrapper: React.FC<BlockWrapperProps> = ({
         bgClass,
         ptClass,
         pbClass,
+        alignClass,
         animation !== 'none' ? animClass : '',
         fontClass,
         textColorClass,

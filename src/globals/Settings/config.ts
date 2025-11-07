@@ -12,6 +12,111 @@ export const Settings: GlobalConfig = {
       type: 'tabs',
       tabs: [
         {
+          label: 'Branding',
+          fields: [
+            {
+              name: 'logo',
+              type: 'upload',
+              label: 'Logo',
+              relationTo: 'media',
+              admin: {
+                description: 'Upload your logo to extract colors and generate a theme',
+              },
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'primaryBrandColor',
+                  type: 'text',
+                  label: 'Primary Brand Color',
+                  admin: {
+                    description: 'Hex code (e.g., #3B82F6) - Can be extracted from logo or manually set',
+                  },
+                },
+                {
+                  name: 'secondaryBrandColor',
+                  type: 'text',
+                  label: 'Secondary Brand Color',
+                  admin: {
+                    description: 'Hex code for secondary/accent color',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'accentColor',
+                  type: 'text',
+                  label: 'Accent Color',
+                  admin: {
+                    description: 'Hex code for accent elements (buttons, links, etc.)',
+                  },
+                },
+                {
+                  name: 'backgroundColor',
+                  type: 'text',
+                  label: 'Background Color',
+                  admin: {
+                    description: 'Hex code for page background',
+                  },
+                },
+              ],
+            },
+            {
+              name: 'extractedPalette',
+              type: 'array',
+              label: 'Color Palette',
+              admin: {
+                description: 'Colors extracted from your logo or manually added',
+                initCollapsed: true,
+              },
+              fields: [
+                {
+                  name: 'colorName',
+                  type: 'text',
+                  label: 'Color Name',
+                  admin: {
+                    description: 'e.g., "Vibrant", "Muted", "Dark Vibrant"',
+                  },
+                },
+                {
+                  name: 'hex',
+                  type: 'text',
+                  label: 'Hex Value',
+                  required: true,
+                  admin: {
+                    description: 'e.g., #FF5733',
+                  },
+                },
+                {
+                  name: 'usage',
+                  type: 'select',
+                  label: 'Suggested Usage',
+                  options: [
+                    { label: 'Primary', value: 'primary' },
+                    { label: 'Secondary', value: 'secondary' },
+                    { label: 'Accent', value: 'accent' },
+                    { label: 'Background', value: 'background' },
+                    { label: 'Text', value: 'text' },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'ui',
+              name: 'themePreview',
+              admin: {
+                components: {
+                  Field: '@/globals/Settings/ThemePreview#ThemePreview',
+                },
+              },
+            },
+          ],
+        },
+        {
           label: 'Typography',
           fields: [
             {

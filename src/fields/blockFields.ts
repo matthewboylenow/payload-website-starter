@@ -151,6 +151,22 @@ export const blockAnimation: Field = {
   },
 }
 
+export const blockTextAlignment: Field = {
+  name: 'textAlignment',
+  type: 'select',
+  label: 'Text Alignment',
+  defaultValue: 'left',
+  options: [
+    { label: 'Left', value: 'left' },
+    { label: 'Center', value: 'center' },
+    { label: 'Right', value: 'right' },
+    { label: 'Justified', value: 'justify' },
+  ],
+  admin: {
+    description: 'Horizontal text alignment for content in this block',
+  },
+}
+
 export const blockCustomCSS: Field = {
   name: 'customCSS',
   type: 'text',
@@ -260,6 +276,7 @@ export const getAllBlockFields = (): Field[] => {
     blockAnchor,
     blockBackgroundColor,
     blockSpacing,
+    blockTextAlignment,
     blockVisibility,
     blockAnimation,
     blockTypography,

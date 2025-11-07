@@ -198,6 +198,7 @@ export interface Page {
   };
   layout: (
     | CallToActionBlock
+    | ColumnsBlock
     | ContentBlock
     | MediaBlock
     | ArchiveBlock
@@ -490,6 +491,10 @@ export interface CallToActionBlock {
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
   /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
+  /**
    * Control when this block is visible
    */
   visibility?: {
@@ -585,6 +590,196 @@ export interface CallToActionBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ColumnsBlock".
+ */
+export interface ColumnsBlock {
+  layout:
+    | '50-50'
+    | '33-67'
+    | '67-33'
+    | '40-60'
+    | '60-40'
+    | '30-70'
+    | '70-30'
+    | '25-75'
+    | '75-25'
+    | '33-33-33'
+    | '25-25-25-25';
+  /**
+   * When columns stack on mobile, show them in reverse order
+   */
+  reverseOnMobile?: boolean | null;
+  gap?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  /**
+   * Add content to each column. The number of columns should match your layout choice.
+   */
+  columns?:
+    | {
+        contentType: 'richText' | 'media' | 'video' | 'code' | 'customHTML' | 'cta';
+        richText?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        media?: (number | null) | Media;
+        caption?: string | null;
+        videoType?: ('youtube' | 'vimeo' | 'upload') | null;
+        videoUrl?: string | null;
+        videoUpload?: (number | null) | Media;
+        code?: string | null;
+        language?: ('typescript' | 'javascript' | 'css' | 'html' | 'json' | 'bash' | 'python') | null;
+        /**
+         * Paste your custom HTML or embed code (iFrames, widgets, etc.)
+         */
+        customHTML?: string | null;
+        ctaText?: string | null;
+        link?: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: number | Post;
+              } | null);
+          url?: string | null;
+          label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline') | null;
+        };
+        verticalAlignment?: ('top' | 'center' | 'bottom') | null;
+        textAlign?: ('left' | 'center' | 'right') | null;
+        padding?: ('none' | 'small' | 'medium' | 'large') | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional anchor ID for deep linking (e.g., "about-us" becomes #about-us)
+   */
+  blockAnchor?: string | null;
+  backgroundColor?: ('none' | 'background' | 'card' | 'muted' | 'accent' | 'brand' | 'primary' | 'secondary') | null;
+  /**
+   * Control padding around this block
+   */
+  spacing?: {
+    paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+    paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
+  };
+  /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
+  /**
+   * Control when this block is visible
+   */
+  visibility?: {
+    hidden?: boolean | null;
+    /**
+     * Block will be visible after this date/time
+     */
+    publishDate?: string | null;
+    /**
+     * Block will be hidden after this date/time
+     */
+    expiryDate?: string | null;
+  };
+  /**
+   * Animation that plays when the block enters the viewport
+   */
+  animation?: ('none' | 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight' | 'zoomIn') | null;
+  /**
+   * Override global typography settings for this block
+   */
+  typography?: {
+    fontFamily?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    headingFont?:
+      | (
+          | 'default'
+          | 'geist-sans'
+          | 'geist-mono'
+          | 'inter'
+          | 'roboto'
+          | 'open-sans'
+          | 'lato'
+          | 'montserrat'
+          | 'playfair-display'
+          | 'merriweather'
+          | 'poppins'
+          | 'raleway'
+          | 'source-sans-pro'
+        )
+      | null;
+    textColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'muted-foreground'
+          | 'accent-foreground'
+          | 'brand-foreground'
+          | 'brand'
+          | 'primary'
+          | 'primary-foreground'
+          | 'secondary'
+          | 'secondary-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+    headingColor?:
+      | (
+          | 'default'
+          | 'foreground'
+          | 'brand'
+          | 'primary'
+          | 'secondary'
+          | 'accent'
+          | 'muted-foreground'
+          | 'white'
+          | 'black'
+        )
+      | null;
+  };
+  /**
+   * Add custom Tailwind classes for advanced styling
+   */
+  customCSS?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'columns';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ContentBlock".
  */
 export interface ContentBlock {
@@ -641,6 +836,10 @@ export interface ContentBlock {
     paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
+  /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
   /**
    * Control when this block is visible
    */
@@ -753,6 +952,10 @@ export interface MediaBlock {
     paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
+  /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
   /**
    * Control when this block is visible
    */
@@ -890,6 +1093,10 @@ export interface ArchiveBlock {
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
   /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
+  /**
    * Control when this block is visible
    */
   visibility?: {
@@ -1017,6 +1224,10 @@ export interface FormBlock {
     paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
+  /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
   /**
    * Control when this block is visible
    */
@@ -1331,6 +1542,10 @@ export interface VideoBlock {
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
   /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
+  /**
    * Control when this block is visible
    */
   visibility?: {
@@ -1473,6 +1688,10 @@ export interface TestimonialsBlock {
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
   /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
+  /**
    * Control when this block is visible
    */
   visibility?: {
@@ -1611,6 +1830,10 @@ export interface TabsAccordionBlock {
     paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
+  /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
   /**
    * Control when this block is visible
    */
@@ -1761,6 +1984,10 @@ export interface StatsBlock {
     paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
+  /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
   /**
    * Control when this block is visible
    */
@@ -1917,6 +2144,10 @@ export interface TimelineBlock {
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
   /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
+  /**
    * Control when this block is visible
    */
   visibility?: {
@@ -2044,6 +2275,10 @@ export interface BannerBlock {
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
   /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
+  /**
    * Control when this block is visible
    */
   visibility?: {
@@ -2156,6 +2391,10 @@ export interface CodeBlock {
     paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
     paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xlarge') | null;
   };
+  /**
+   * Horizontal text alignment for content in this block
+   */
+  textAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
   /**
    * Control when this block is visible
    */
@@ -2579,6 +2818,7 @@ export interface PagesSelect<T extends boolean = true> {
     | T
     | {
         cta?: T | CallToActionBlockSelect<T>;
+        columns?: T | ColumnsBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
@@ -2634,6 +2874,73 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
+  visibility?:
+    | T
+    | {
+        hidden?: T;
+        publishDate?: T;
+        expiryDate?: T;
+      };
+  animation?: T;
+  typography?:
+    | T
+    | {
+        fontFamily?: T;
+        headingFont?: T;
+        textColor?: T;
+        headingColor?: T;
+      };
+  customCSS?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ColumnsBlock_select".
+ */
+export interface ColumnsBlockSelect<T extends boolean = true> {
+  layout?: T;
+  reverseOnMobile?: T;
+  gap?: T;
+  columns?:
+    | T
+    | {
+        contentType?: T;
+        richText?: T;
+        media?: T;
+        caption?: T;
+        videoType?: T;
+        videoUrl?: T;
+        videoUpload?: T;
+        code?: T;
+        language?: T;
+        customHTML?: T;
+        ctaText?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        verticalAlignment?: T;
+        textAlign?: T;
+        padding?: T;
+        id?: T;
+      };
+  blockAnchor?: T;
+  backgroundColor?: T;
+  spacing?:
+    | T
+    | {
+        paddingTop?: T;
+        paddingBottom?: T;
+      };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -2685,6 +2992,7 @@ export interface ContentBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -2719,6 +3027,7 @@ export interface MediaBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -2758,6 +3067,7 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -2794,6 +3104,7 @@ export interface FormBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -2835,6 +3146,7 @@ export interface VideoBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -2882,6 +3194,7 @@ export interface TestimonialsBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -2926,6 +3239,7 @@ export interface TabsAccordionBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -2972,6 +3286,7 @@ export interface StatsBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -3018,6 +3333,7 @@ export interface TimelineBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -3053,6 +3369,7 @@ export interface BannerBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -3088,6 +3405,7 @@ export interface CodeBlockSelect<T extends boolean = true> {
         paddingTop?: T;
         paddingBottom?: T;
       };
+  textAlignment?: T;
   visibility?:
     | T
     | {
@@ -3629,6 +3947,43 @@ export interface Footer {
 export interface Setting {
   id: number;
   /**
+   * Upload your logo to extract colors and generate a theme
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Hex code (e.g., #3B82F6) - Can be extracted from logo or manually set
+   */
+  primaryBrandColor?: string | null;
+  /**
+   * Hex code for secondary/accent color
+   */
+  secondaryBrandColor?: string | null;
+  /**
+   * Hex code for accent elements (buttons, links, etc.)
+   */
+  accentColor?: string | null;
+  /**
+   * Hex code for page background
+   */
+  backgroundColor?: string | null;
+  /**
+   * Colors extracted from your logo or manually added
+   */
+  extractedPalette?:
+    | {
+        /**
+         * e.g., "Vibrant", "Muted", "Dark Vibrant"
+         */
+        colorName?: string | null;
+        /**
+         * e.g., #FF5733
+         */
+        hex: string;
+        usage?: ('primary' | 'secondary' | 'accent' | 'background' | 'text') | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Default font for body text across the site
    */
   defaultFont?:
@@ -3778,6 +4133,19 @@ export interface FooterSelect<T extends boolean = true> {
  * via the `definition` "settings_select".
  */
 export interface SettingsSelect<T extends boolean = true> {
+  logo?: T;
+  primaryBrandColor?: T;
+  secondaryBrandColor?: T;
+  accentColor?: T;
+  backgroundColor?: T;
+  extractedPalette?:
+    | T
+    | {
+        colorName?: T;
+        hex?: T;
+        usage?: T;
+        id?: T;
+      };
   defaultFont?: T;
   headingFont?: T;
   defaultTextColor?: T;

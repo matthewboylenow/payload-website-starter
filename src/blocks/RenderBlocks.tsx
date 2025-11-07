@@ -4,6 +4,7 @@ import type { Page } from '@/payload-types'
 
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { ColumnsBlock } from '@/blocks/Columns/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
@@ -18,6 +19,7 @@ import { BlockWrapper } from '@/components/BlockWrapper'
 
 const blockComponents = {
   archive: ArchiveBlock,
+  columns: ColumnsBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
   formBlock: FormBlock,
@@ -57,6 +59,8 @@ export const RenderBlocks: React.FC<{
                   backgroundColor={block.backgroundColor}
                   // @ts-expect-error block types may not have all these fields
                   spacing={block.spacing}
+                  // @ts-expect-error block types may not have all these fields
+                  textAlignment={block.textAlignment}
                   // @ts-expect-error block types may not have all these fields
                   visibility={block.visibility}
                   // @ts-expect-error block types may not have all these fields
